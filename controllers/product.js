@@ -61,11 +61,11 @@ exports.getProduct = async(req, res)=>{
          new :true
       });
       
-      if(!updateProduct){
-        res.json({
-          message: "Product not found"
-        })
-      }
+      // if(!updateProduct){
+      //   res.json({
+      //     message: "Product not found"
+      //   })
+      // }
       res.status(200).json({
          success: true,
          user: updateProduct
@@ -86,11 +86,11 @@ exports.getProduct = async(req, res)=>{
       
        const deleteProduct = await product.findByIdAndDelete(id)
   
-       if(!deleteProduct){
-        res.json({
-          message:"Product not found"
-        })
-       }
+      //  if(!deleteProduct){
+      //   res.json({
+      //     message:"Product not found"
+      //   })
+      //  }
        res.status(200).json({
         success:true,
         user: deleteProduct

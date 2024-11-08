@@ -8,4 +8,6 @@ mongoose.connect(DB_CONN).then(()=> console.log("MongoDB Connected")).catch((err
     console.error(err.message);
 })
 
-app.listen(PORT);
+app.listen(PORT,()=> console.log(`Server running on PORT:${PORT}`));
+
+module.exports = app;

@@ -14,6 +14,7 @@ const protect =  async function (req,res,next){
              data:'You are not logged in please login again to get access'
          })
      }
+     
      const decoded=jwt.verify(token,JWT_KEY);
     //  console.log(decoded)
      const currentUser=await User.findById(decoded._id);

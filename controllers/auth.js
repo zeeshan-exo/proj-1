@@ -1,11 +1,13 @@
 const User = require('../models/user')
+const bcrypt=require("bcrypt")
 const jwt=require("jsonwebtoken")
 const {JWT_KEY} = require('../cred')
 
 exports.signup= async(req,res)=>{
     try{
-       const {name, email, password, role}= req.body;
-
+        
+           const {name, email, password, role}= req.body;
+ 
        const newUser = await User.create({name,email,password, role});
 
        const {_id}=newUser
@@ -30,23 +32,31 @@ exports.signup= async(req,res)=>{
 
   exports.login= async(req, res)=>{
     try{
-        const {name, email, password, role}= req.body;
-        const user = await User.find({email});
+        const {email, password}= req.body;
 
-        if(!user) throw new Error("Invalid email or password")
+        const user = await User.findOne({email});
+
+            if(user && (await user.matchPassword(password))){
+                const {_id}=user
+
+                const token= jwt.sign({_id},JWT_KEY);
+        
+                res.setHeader('authorization', `Bearer ${token}`);
+        
+                if(!token) throw new Error("no token");
+        
+                res.status(201).json({
+                 status: "success",
+                 token,
+                 data: user
+                })
+            }else{
+                throw new Error("Something went wrong")
+            }
             
-        const {_id}=user
-
-        const token= jwt.sign({_id},jwtkey);
-        res.setHeader('authorization', `Bearer ${token}`);
-
-        if(!token) throw new Error("no token");
-        res.status(201).json({
-         status: "success",
-         token,
-         data: user
-        })
+       
      }
+
      catch(err){
          res.status(400).json({
              status:"fail",
@@ -64,6 +74,7 @@ exports.signup= async(req,res)=>{
          message: "user logged out successfull"
         })
      }
+     
      catch(err){
          res.status(400).json({
              status:"fail",

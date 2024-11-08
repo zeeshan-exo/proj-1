@@ -11,7 +11,7 @@ exports.getAll =async(req, res)=>{
       res.status(200).json(users)
     }
     catch(err){
-      res.status(500).json({
+      res.status(400).json({
           success:false,
            message:err.message
           })
@@ -30,7 +30,7 @@ exports.getOne =async(req, res)=>{
   })
   }
   catch(err){
-    res.status(500).json({
+    res.status(400).json({
         success:false,
          message:err.message
         })
@@ -40,7 +40,7 @@ exports.getOne =async(req, res)=>{
 exports.updateOne=async(req, res) => {
     const {id} = req.params; 
     try{
-      console.log("patch function is running")
+      // console.log("patch function is running")
       const{name, email, password} = req.body;
       const updateUser= await User.findByIdAndUpdate(id, {name, email, password},{
          new :true
@@ -57,7 +57,7 @@ exports.updateOne=async(req, res) => {
     }
     catch(err){
       // console.log(err)
-       res.status(500).json({
+       res.status(400).json({
         success:false,
         messsage: err.message
        })
@@ -79,7 +79,7 @@ exports.updateOne=async(req, res) => {
        })
      }
      catch(err){
-      res.status(500).json({
+      res.status(400).json({
        success:false,
        messsage: err.message
       })

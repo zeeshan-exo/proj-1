@@ -14,7 +14,7 @@ exports.signup= async(req,res)=>{
 
        const token= jwt.sign({_id},JWT_KEY);
 
-       res.setHeader('authorization', `Bearer ${token}`);
+    
        
        res.status(201).json({
         status: "success",
@@ -41,8 +41,7 @@ exports.signup= async(req,res)=>{
 
                 const token= jwt.sign({_id},JWT_KEY);
         
-                res.setHeader('authorization', `Bearer ${token}`);
-        
+              
                 if(!token) throw new Error("no token");
         
                 res.status(201).json({
@@ -67,7 +66,7 @@ exports.signup= async(req,res)=>{
 
   exports.logout= async (req, res)=>{
     try{
-        res.setHeader('authorization',null);
+    
         
         res.status(201).json({
          status: "success",

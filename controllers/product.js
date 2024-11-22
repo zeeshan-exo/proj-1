@@ -1,108 +1,112 @@
-const product= require('../models/product')
-const User=require("../models/user")
-const jwt=require("jsonwebtoken")
-const {JWT_KEY}=require("../cred")
-//create product
-exports.createProduct=async(req,res)=>{
+const Product = require("../models/product");
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const { JWT_KEY } = require("../cred");
 
-    try{
-       const {name, company, price, details}= req.body;
-       
-       const newProduct = await product.create({name, company, price, details});
-       //console.log(req.headers.authorization.split(" ")[1])
-       const usertoken=req.headers.authorization.split(" ")[1];
+exports.create = async (req, res, next) => {
+  try {
 
-       const payload=jwt.verify(usertoken,JWT_KEY)
+    const { productID, name, company, price, details } = req.body;
 
-       const user=await User.find({_id:payload._id});
+    const product = await Product.create({
+      productID,
+      name,
+      company,
+      price,
+      details,
+    });
 
-       if(!user){
-        throw new Error("Invalid Token")
-       }
+    //for test comment the below code till response
+    const usertoken = req.headers.authorization.split(" ")[1];
 
-       res.status(200).json({
-        status: "success",
-        data: newProduct
-       })
+    const payload = jwt.verify(usertoken, JWT_KEY);
+
+    const user = await User.find({ _id: payload._id });
+
+    if (!user) {
+      throw new Error("Invalid Token");
     }
-    catch(err){ 
-        res.status(400).json({
-            status:"fail",
-             message:err.message
-            })
-      }
-}
+
+    res.status(200).json({
+      status: "success",
+      data: product,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 //get product
-exports.getProduct = async(req, res)=>{
- 
-    try{
-      const newproduct = await product.find();
+exports.getAll = async (req, res, next) => {
+  try {
 
-      res.status(200).json({
-        status: "success",
-        message: newproduct
-       })
-    }
-    catch(err){
-      res.status(500).json({
-          success:false,
-           message:err.message
-          })
-    }
+    const product = await Product.find();
+
+    res.status(200).json({
+      status: "success",
+      data: product,
+    });
+  } catch (err) {
+    next(err);
   }
+};
+
+exports.getOne = async (req, res, next) => {
+  try {
+
+    const { id } = req.params;
+
+    const getOneproduct = await Product.findOne({ _id: id });
+
+    if (!getOneproduct) throw new Error("product not found");
+
+    res.status(200).json({
+      status: "success",
+      data: getOneproduct,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 //update product
-  exports.updateProduct = async(req, res) => {
-    const {id} = req.params;
-  
-    
-    try{
-      const{name, company, price, details} = req.body;
-      const updateProduct= await product.findByIdAndUpdate(id, {name, company, price, details},{
-         new :true
-      });
-      
-      // if(!updateProduct){
-      //   res.json({
-      //     message: "Product not found"
-      //   })
-      // }
-      res.status(200).json({
-         success: true,
-         user: updateProduct
-      })
-  
-    }
-    catch(err){
-       res.status(500).json({
-        success:false,
-        messsage: err.message
-       })
-    }
-  }
-//del product
-  exports.deleteProduct =  async(req, res)=>{
-    const {id} = req.params;
-     try{
-      
-       const deleteProduct = await product.findByIdAndDelete(id)
-  
-      //  if(!deleteProduct){
-      //   res.json({
-      //     message:"Product not found"
-      //   })
-      //  }
-       res.status(200).json({
-        success:true,
-        user: deleteProduct
-       })
-     }
-     catch(err){
-      res.status(500).json({
-       success:false,
-       messsage: err.message
-      })
-   }
-  }
+exports.update = async (req, res, next) => {
 
+  const { id } = req.params;
+
+  try {
+
+    const { productID, name, company, price, details } = req.body;
+
+    const updateProduct = await Product.findByIdAndUpdate(
+      id,
+      { productID, name, company, price, details },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      data: updateProduct,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+//del product
+
+exports.delete = async (req, res, next) => {
   
- 
+  const { id } = req.params;
+
+  try {
+    const deleteProduct = await Product.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      data: deleteProduct,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

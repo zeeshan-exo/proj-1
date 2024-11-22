@@ -1,35 +1,25 @@
 const express = require("express");
-const product = require("./routes/product")
+const product = require("./routes/product");
 const user = require("./routes/users");
-
-//code execution starts
+const order = require("./routes/order");
+const { errorHandler } = require("./middlewares/errorHandler");
 
 const app = express();
+
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 
-app.use('/api/user', user);
-app.use('/api/product',product);
+app.use(express.urlencoded({ extended: true }));
 
+app.use("/api/user", user);
 
-module.exports=app
+app.use("/api/product", product);
 
+app.use("/api/order", order);
 
+app.all("*", (req, res, next) => {
+  throw new Error("this path not found");
+});
 
+app.use(errorHandler);
 
-
-
-
-// fisrt way of imorting and exporting
-// module.exports=logging
-// const logging=require("./middelware.js")
-// logging()
-
-
-
-// second way of importing and exporting modiles
-// exports.logging=logging
-// exports.signup=signup
-// exports.login=login
-// const  middelware=require("./middelware.js")
-//middelware.loggin()
+module.exports = app;

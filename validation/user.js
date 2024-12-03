@@ -12,7 +12,7 @@ exports.UserVerfication = [
   body("role")
     .optional()
     .isIn(["user", "admin"])
-    .isEmpty()
+    .notEmpty()
     .withMessage("Invalid role"),
 
   (req, res, next) => {
@@ -21,7 +21,7 @@ exports.UserVerfication = [
     if (!error.isEmpty()) {
       return res.status(400).json({ error: error.array() });
     }
-    
+
     next();
   },
 ];

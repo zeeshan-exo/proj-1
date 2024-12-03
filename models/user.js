@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter your name"],
-    minlength: [50, "Please invalid name length"],
+    minlength: [5, "Please invalid name length"],
   },
   email: {
     type: String,
@@ -38,7 +38,7 @@ userSchema.pre("save", async function (next) {
   }
 
   const salt = await bcrypt.genSalt(10);
-  
+
   this.password = await bcrypt.hash(this.password, salt);
 });
 

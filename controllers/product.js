@@ -5,11 +5,9 @@ const { JWT_KEY } = require("../cred");
 
 exports.create = async (req, res, next) => {
   try {
-
-    const { productID, name, company, price, details } = req.body;
+    const { name, company, price, details } = req.body;
 
     const product = await Product.create({
-      productID,
       name,
       company,
       price,
@@ -17,9 +15,9 @@ exports.create = async (req, res, next) => {
     });
 
     //for test comment the below code till response
-    const usertoken = req.headers.authorization.split(" ")[1];
+    // const usertoken = req.headers.authorization.split(" ")[1];
 
-    const payload = jwt.verify(usertoken, JWT_KEY);
+    // const payload = jwt.verify(usertoken, JWT_KEY);
 
     const user = await User.find({ _id: payload._id });
 
@@ -38,7 +36,6 @@ exports.create = async (req, res, next) => {
 //get product
 exports.getAll = async (req, res, next) => {
   try {
-
     const product = await Product.find();
 
     res.status(200).json({
@@ -52,7 +49,6 @@ exports.getAll = async (req, res, next) => {
 
 exports.getOne = async (req, res, next) => {
   try {
-
     const { id } = req.params;
 
     const getOneproduct = await Product.findOne({ _id: id });
@@ -70,11 +66,9 @@ exports.getOne = async (req, res, next) => {
 
 //update product
 exports.update = async (req, res, next) => {
-
   const { id } = req.params;
 
   try {
-
     const { productID, name, company, price, details } = req.body;
 
     const updateProduct = await Product.findByIdAndUpdate(
@@ -96,7 +90,6 @@ exports.update = async (req, res, next) => {
 //del product
 
 exports.delete = async (req, res, next) => {
-  
   const { id } = req.params;
 
   try {

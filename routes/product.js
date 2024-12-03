@@ -7,23 +7,13 @@ const router = express.Router();
 router
   .route("/")
   .get(productController.getAll)
-  .post(
-    protect,
-    checkAdmin,
-    validation.productValidator,
-    productController.create
-  );
+  .post(validation.productValidator, productController.create);
 
 router
   .route("/:id")
   .get(productController.getOne)
-  .patch(
-    protect,
-    checkAdmin,
-    validation.productValidator,
-    productController.update
-  )
-  .delete(protect, checkAdmin, productController.delete);
+  .patch(validation.productValidator, productController.update)
+  .delete(productController.delete);
 
 //for tests uncomment the below code
 // router

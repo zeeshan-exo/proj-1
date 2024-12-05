@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
         secure: true,
       });
 
-      console.log(res);
+  
       res.status(200).json({
         status: "success",
         token,

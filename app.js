@@ -4,6 +4,7 @@ const user = require("./routes/users");
 const order = require("./routes/order");
 const { errorHandler } = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 
 const cors = require("cors");
 
@@ -15,6 +16,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
 

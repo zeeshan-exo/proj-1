@@ -18,12 +18,8 @@ exports.create = async (req, res, next) => {
     // const usertoken = req.headers.authorization.split(" ")[1];
 
     // const payload = jwt.verify(usertoken, JWT_KEY);
-
-    const user = await User.find({ _id: payload._id });
-
-    if (!user) {
-      throw new Error("Invalid Token");
-    }
+    console.log(product, name, company);
+    if (!product) throw new Error("Product creation failed");
 
     res.status(200).json({
       status: "success",
@@ -69,11 +65,11 @@ exports.update = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const { productID, name, company, price, details } = req.body;
+    const { name, company, price, details } = req.body;
 
     const updateProduct = await Product.findByIdAndUpdate(
       id,
-      { productID, name, company, price, details },
+      { name, company, price, details },
       {
         new: true,
       }

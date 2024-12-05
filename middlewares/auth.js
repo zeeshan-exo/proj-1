@@ -6,7 +6,7 @@ const protect = async (req, res, next) => {
   let checkToken;
  
   checkToken = req.cookies?.token;
-  console.log(checkToken);
+  // console.log(checkToken);
   if (!checkToken) {
     return res.status(401).json({ message: "No token found" });
   }

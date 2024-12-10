@@ -15,6 +15,16 @@ const productSchema = new mongoose.Schema({
   details: {
     type: String,
   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "categories",
+    required: [true, "Please provide a ref to category"],
+  },
+  subCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "subcategories",
+    required: [true, "Please provide a ref to category"],
+  },
 });
 
 const products = mongoose.model("Products", productSchema);

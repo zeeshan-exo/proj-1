@@ -5,6 +5,15 @@ const { protect, checkAdmin } = require("../middlewares/auth.js");
 const router = express.Router();
 
 router
+  .route("/subcategory")
+  .post(productController.subCategory)
+  .get(productController.getsubCategory);
+router
+  .route("/category")
+  .post(productController.createCategory)
+  .get(productController.getCategory);
+
+router
   .route("/")
   .get(productController.getAll)
   .post(validation.productValidator, productController.create);

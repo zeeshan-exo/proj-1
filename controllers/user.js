@@ -13,6 +13,21 @@ exports.getAll = async (req, res) => {
     });
   }
 };
+exports.create = async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    const newUser = await User.create({ name, email, password, role });
+    console.log(newUser);
+
+    res.status(200).json({
+      status: "success",
+      data: newUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.getOne = async (req, res, next) => {
   try {
@@ -28,7 +43,6 @@ exports.getOne = async (req, res, next) => {
   }
 };
 
-//UPDATE USER
 exports.updateOne = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -46,11 +60,9 @@ exports.updateOne = async (req, res, next) => {
       data: updateUser,
     });
   } catch (err) {
-    // console.log(err)
     next(err);
   }
 };
-//DELETE USER
 exports.deleteOne = async (req, res) => {
   const { id } = req.params;
   try {

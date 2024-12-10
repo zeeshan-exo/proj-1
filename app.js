@@ -2,6 +2,7 @@ const express = require("express");
 const product = require("./routes/product");
 const user = require("./routes/users");
 const order = require("./routes/order");
+const dashboard = require ("./routes/dashboard")
 const { errorHandler } = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
@@ -24,9 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", user);
 
-app.use("/dash", (req, res) => {
-  res.send("welcome");
-});
+app.use("/api/dashboard", dashboard)
 
 app.use("/api/product", product);
 

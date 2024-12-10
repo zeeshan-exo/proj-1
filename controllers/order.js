@@ -42,3 +42,38 @@ exports.create = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find().populate("user", "name email").exec();
+
+    res.status(200).json({
+      status: "success",
+      data: orders,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(id);
+    console.log("order del");
+
+    if (!deletedOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Order deleted successfully",
+      data: deletedOrder,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

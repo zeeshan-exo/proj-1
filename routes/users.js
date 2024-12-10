@@ -8,7 +8,10 @@ const router = express.Router();
 router.route("/logout").post(auth.logout);
 router.route("/signup").post(validation.UserVerfication, auth.signup);
 
-router.route("/").get(protect, checkAdmin, usercontroller.getAll);
+router
+  .route("/")
+  .get(protect, checkAdmin, usercontroller.getAll)
+  .post(protect, checkAdmin, usercontroller.create);
 
 router
   .route("/:id")

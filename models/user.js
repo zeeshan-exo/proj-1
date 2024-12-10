@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "user"],
     default: "user",
   },
+  
 });
 
 userSchema.methods.matchPassword = async function (enteredPass) {

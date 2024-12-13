@@ -56,6 +56,22 @@ exports.getAllOrders = async (req, res, next) => {
   }
 };
 
+exports.getOne = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findOne({ _id: id })
+      .populate("user", "name email")
+      .exec();
+
+    res.status(200).json({
+      status: "success",
+      data: order,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.delete = async (req, res, next) => {
   const { id } = req.params;
   try {

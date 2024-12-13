@@ -4,6 +4,7 @@ const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter product name"],
+    unique: [true, "Name must be unique"],
   },
   company: {
     type: String,

@@ -45,10 +45,35 @@ exports.create = async (req, res, next) => {
 
 exports.getAllOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find().populate("user", "name email").exec();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const orders = await Order.find()
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "name email")
+      .exec();
+
+    const totalOrders = await Order.countDocuments();
+
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    const pagination = {
+      totalOrders,
+      totalPages,
+      currentPage: page,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+      nextPage: page < totalPages ? page + 1 : null,
+      previousPage: page > 1 ? page - 1 : null,
+    };
 
     res.status(200).json({
       status: "success",
+      pagination,
       data: orders,
     });
   } catch (err) {

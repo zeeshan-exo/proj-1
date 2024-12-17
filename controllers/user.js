@@ -2,17 +2,50 @@ const User = require("../models/user");
 
 exports.getAll = async (req, res) => {
   try {
-    const users = await User.find({});
-    if (!users) throw new Error("data not found");
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
-    res.status(200).json({ data: users });
+    const skip = (page - 1) * limit;
+
+    const users = await User.find({})
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalUsers = await User.countDocuments();
+
+    const totalPages = Math.ceil(totalUsers / limit);
+    const pagination = {
+      totalUsers,
+      totalPages,
+      currentPage: page,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+      nextPage: page < totalPages ? page + 1 : null,
+      previousPage: page > 1 ? page - 1 : null,
+    };
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No users found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      pagination,
+      data: users,
+    });
   } catch (err) {
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      message: err.message,
+      message: err.message || "Server Error",
     });
   }
 };
+
 exports.create = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;

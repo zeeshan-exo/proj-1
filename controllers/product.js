@@ -110,16 +110,60 @@ exports.create = async (req, res, next) => {
 };
 exports.getAll = async (req, res, next) => {
   try {
-    const product = await Product.find()
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    if (page <= 0 || limit <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Page and limit must be positive integers.",
+      });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const products = await Product.find({})
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
       .populate("category", "name")
       .populate("subCategory", "name");
 
+    const totalProducts = await Product.countDocuments();
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const pagination = {
+      totalProducts,
+      totalPages,
+      currentPage: page,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+      nextPage: page < totalPages ? page + 1 : null,
+      previousPage: page > 1 ? page - 1 : null,
+    };
+
+    if (!products || products.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No products found for the given page.",
+        pagination,
+        data: [],
+      });
+    }
+
     res.status(200).json({
-      status: "success",
-      data: product,
+      success: true,
+      pagination,
+      data: products,
     });
   } catch (err) {
-    next(err);
+    console.error("Error fetching products:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+      error: err.message,
+    });
   }
 };
 

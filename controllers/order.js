@@ -81,6 +81,60 @@ exports.getAllOrders = async (req, res, next) => {
   }
 };
 
+exports.update = async (req, res, next) => {
+  const { id } = req.params;
+  const { items, contact, shippingAddress } = req.body;
+
+  try {
+    let order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Order not found",
+      });
+    }
+
+    if (items && Array.isArray(items)) {
+      for (const item of items) {
+        const { productID, quantity } = item;
+        const product = await Product.findById(productID);
+
+        if (!product) {
+          throw new Error(`Product with ID ${productID} not found`);
+        }
+
+        if (quantity < 1) {
+          throw new Error(
+            `Quantity for product ${productID} must be at least 1`
+          );
+        }
+
+        item.totalAmount = product.price * quantity;
+      }
+      order.items = items;
+    }
+
+    if (contact) order.contact = contact;
+    if (shippingAddress) order.shippingAddress = shippingAddress;
+
+    console.log("Modified:", order.isModified());
+    const updatedOrder = await order.save();
+
+    const populatedOrder = await Order.findById(updatedOrder._id).populate(
+      "user",
+      "name email"
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: populatedOrder,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getOne = async (req, res, next) => {
   const { id } = req.params;
   try {

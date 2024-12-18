@@ -6,7 +6,11 @@ const router = express.Router();
 
 router.route("/").get(orderController.getAllOrders);
 
-router.route("/:id").delete(orderController.delete).get(orderController.getOne);
+router
+  .route("/:id")
+  .delete(orderController.delete)
+  .get(orderController.getOne)
+  .patch(orderController.update);
 
 router
   .route("/")
